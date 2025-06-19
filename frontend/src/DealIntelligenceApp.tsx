@@ -54,7 +54,7 @@ export default function DealIntelligenceApp() {
                       <TableCell>{deal.revenue}</TableCell>
                       <TableCell>{deal.ebitda}</TableCell>
                       <TableCell>{deal.margin}</TableCell>
-                      <TableCell>{deal.capitalSought}</TableCell>
+                      <TableCell>{deal.capital_sought}</TableCell>
                       <TableCell>{deal.objective}</TableCell>
                     </TableRow>
                   ))}
@@ -75,7 +75,7 @@ export default function DealIntelligenceApp() {
                       <li key={i}>{h}</li>
                     ))}
                   </ul>
-                  <p><strong>AI Insights:</strong> {selectedDeal.aiInsights}</p>
+                  <p><strong>AI Insights:</strong> {selectedDeal.ai_insights}</p>
                   <Button variant="outline" onClick={() => alert('Deep research view coming soon...')}>Explore More</Button>
                 </CardContent>
               </Card>
