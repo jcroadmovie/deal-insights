@@ -9,21 +9,35 @@ export default function DealIntelligenceApp() {
   const [files, setFiles] = useState<FileList | null>(null);
   const [deals, setDeals] = useState<any[]>([]);
   const [selectedDeal, setSelectedDeal] = useState<any | null>(null);
+  const [status, setStatus] = useState<string>('');
+  const apiUrl = import.meta.env.VITE_API_URL || '/api';
 
   async function handleUpload() {
     if (!files) return;
     const formData = new FormData();
     Array.from(files).forEach(file => formData.append('files', file));
-    const res = await fetch('/api/upload', { method: 'POST', body: formData });
-    const data = await res.json();
-    setDeals(data.deals);
+    try {
+      setStatus('Uploading...');
+      const res = await fetch(`${apiUrl}/upload`, { method: 'POST', body: formData });
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || 'Upload failed');
+      }
+      const data = await res.json();
+      setDeals(data.deals);
+      setStatus('Upload successful');
+    } catch (err) {
+      console.error(err);
+      setStatus('Upload failed');
+    }
   }
 
   return (
     <div className="p-4 space-y-6">
       <div className="space-y-2">
-        <Input type="file" multiple onChange={e => setFiles(e.target.files)} />
+        <Input type="file" accept="application/pdf" multiple onChange={e => setFiles(e.target.files)} />
         <Button onClick={handleUpload}>Upload Teasers</Button>
+        {status && <p>{status}</p>}
       </div>
 
       {deals.length > 0 && (

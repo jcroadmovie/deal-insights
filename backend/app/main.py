@@ -1,4 +1,6 @@
+import os
 from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 import pdfplumber
@@ -7,6 +9,15 @@ import json
 from ..db import Deal, Memo, SessionLocal
 
 app = FastAPI()
+
+origins = os.getenv("CORS_ORIGINS", "*").split(",")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 llm = ChatOpenAI(model='gpt-4')
 
 

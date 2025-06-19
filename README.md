@@ -27,14 +27,23 @@ A full-stack AI-powered deal intelligence platform for private credit investors 
 ## Setup
 
 1. Create a `.env` with your OpenAI key and database URL
-2. From the project root, run the backend (the `backend` directory is a Python package):
+2. Install Python dependencies:
+```bash
+pip install -r backend/requirements.txt
+```
+3. From the project root, run the backend (the `backend` directory is a Python package):
 ```bash
 uvicorn backend.app.main:app --reload
 ```
-3. Install frontend dependencies and run the dev server:
+4. Install frontend dependencies and run the dev server:
 ```bash
 cd frontend
 npm install
 npm run dev
+```
+The frontend looks for the API at `VITE_API_URL` (defaults to `/api`). You can
+create a `frontend/.env` file to override it:
+```bash
+echo "VITE_API_URL=http://localhost:8000/api" > frontend/.env
 ```
 
