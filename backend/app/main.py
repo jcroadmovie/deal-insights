@@ -1,13 +1,13 @@
 import os
 from dotenv import load_dotenv
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 import pdfplumber
 import json
 
-from ..db import Deal, Memo, SessionLocal
+from ..db import Deal, Memo, User, SessionLocal
 
 load_dotenv()
 
@@ -102,6 +102,50 @@ async def upload(files: list[UploadFile] = File(...)):
         db.add(memo)
         db.commit()
 
-        output.append(fields)
+        # include the database ID so the frontend can request memos later
+        output_fields = {
+            "id": deal.id,
+            **fields,
+            "highlights": json.loads(fields["highlights"]),
+            "comparables": json.loads(fields["comparables"]),
+            "risk_indicators": json.loads(fields["risk_indicators"]),
+        }
+        output.append(output_fields)
 
     return {"deals": output}
+
+
+@app.get("/api/deals/{deal_id}/memo")
+async def generate_memo(deal_id: int, user_id: int | None = None):
+    """Generate a personalized memo for a deal."""
+    db = SessionLocal()
+    deal = db.query(Deal).filter(Deal.id == deal_id).first()
+    if not deal:
+        raise HTTPException(status_code=404, detail="Deal not found")
+
+    user = None
+    if user_id is not None:
+        user = db.query(User).filter(User.id == user_id).first()
+
+    investor_profile = ""
+    if user:
+        investor_profile = f"Investor {user.name}. Mandates: {user.mandates}. Preferred sectors: {user.sectors}."
+
+    prompt = PromptTemplate(
+        input_variables=["summary", "investor"],
+        template="\n".join([
+            "Write a concise one-page investment memo for the following deal:",
+            "{summary}",
+            "Tailor the memo for the investor described below:",
+            "{investor}",
+        ]),
+    )
+    chain = prompt | llm
+    response = chain.invoke({"summary": deal.summary, "investor": investor_profile})
+    memo_content = getattr(response, "content", response)
+
+    memo = Memo(deal_id=deal.id, content=memo_content)
+    db.add(memo)
+    db.commit()
+
+    return {"memo": memo_content}
