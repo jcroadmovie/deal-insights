@@ -77,25 +77,62 @@ export default function DealIntelligenceApp() {
           </TabsContent>
 
           <TabsContent value="memo">
-            {selectedDeal ? (
-              <Card>
-                <CardContent className="space-y-2">
-                  <h2 className="text-xl font-semibold">Smart Memo: {selectedDeal.name}</h2>
-                  <p><strong>Sector:</strong> {selectedDeal.sector}</p>
-                  <p><strong>Overview:</strong> {selectedDeal.summary}</p>
-                  <p><strong>Investment Highlights:</strong></p>
-                  <ul className="list-disc pl-4">
-                    {selectedDeal.highlights.map((h: string, i: number) => (
-                      <li key={i}>{h}</li>
+            <div className="flex flex-col gap-4 md:flex-row">
+              <div className="md:w-1/2">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Company</TableHead>
+                      <TableHead>Sector</TableHead>
+                      <TableHead>Revenue</TableHead>
+                      <TableHead>EBITDA</TableHead>
+                      <TableHead>Margin</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {deals.map((deal, i) => (
+                      <TableRow
+                        key={i}
+                        onClick={() => setSelectedDeal(deal)}
+                        className={`cursor-pointer ${selectedDeal === deal ? 'bg-gray-100' : ''}`}
+                      >
+                        <TableCell>{deal.name}</TableCell>
+                        <TableCell>{deal.sector}</TableCell>
+                        <TableCell>{deal.revenue}</TableCell>
+                        <TableCell>{deal.ebitda}</TableCell>
+                        <TableCell>{deal.margin}</TableCell>
+                      </TableRow>
                     ))}
-                  </ul>
-                  <p><strong>AI Insights:</strong> {selectedDeal.ai_insights}</p>
-                  <Button variant="outline" onClick={() => alert('Deep research view coming soon...')}>Explore More</Button>
-                </CardContent>
-              </Card>
-            ) : (
-              <p>Select a deal from the comparison tab to view its memo.</p>
-            )}
+                  </TableBody>
+                </Table>
+              </div>
+              <div className="md:w-1/2">
+                {selectedDeal ? (
+                  <Card>
+                    <CardContent className="space-y-2">
+                      <h2 className="text-xl font-semibold">Smart Memo: {selectedDeal.name}</h2>
+                      <p><strong>Sector:</strong> {selectedDeal.sector}</p>
+                      <p><strong>Overview:</strong> {selectedDeal.summary}</p>
+                      <p><strong>Investment Highlights:</strong></p>
+                      <ul className="list-disc pl-4">
+                        {selectedDeal.highlights.map((h: string, i: number) => (
+                          <li key={i}>{h}</li>
+                        ))}
+                      </ul>
+                      <p><strong>AI Insights:</strong> {selectedDeal.ai_insights}</p>
+                      <Button
+                        variant="outline"
+                        onClick={() => alert('Deep research view coming soon...')}
+                      >
+                        Explore More
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <p>Select a deal to view its memo.</p>
+                )}
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       )}
