@@ -11,12 +11,18 @@ A full-stack AI-powered deal intelligence platform for private credit investors 
 - Upload teaser PDFs
 - Extract and compare key deal metrics
 - Generate personalized investment memos with LLMs
+- Identify basic comparables and risk indicators
 - Extend with public data enrichment
 
 ## Tech Stack
 - Frontend: React + Tailwind (ShadCN UI)
 - Backend: FastAPI + LangChain + OpenAI
 - Database: PostgreSQL
+
+### Database Schema
+- **deals**: extracted fields, AI insights, comparables and risks
+- **users**: name, mandates and preferred sectors
+- **memos**: AI generated memos linked to deals
 
 ## Setup
 
