@@ -3,6 +3,10 @@
 
 A full-stack AI-powered deal intelligence platform for private credit investors and bankers.
 
+## Example screenshot
+![ChatGPT Image Jun 19, 2025, 11_43_55 AM](https://github.com/user-attachments/assets/2bee63e0-8c61-425c-8b54-8d78c0e5b115)
+
+
 ## Features
 - Upload teaser PDFs
 - Extract and compare key deal metrics
