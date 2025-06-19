@@ -61,7 +61,7 @@ async def upload(files: list[UploadFile] = File(...)):
     for file in files:
         raw_text = extract_text(file)
         fields = extract_fields(raw_text)
-        fields["aiInsights"] = generate_insight(raw_text)
+        fields["ai_insights"] = generate_insight(raw_text)
         deal = Deal(**fields)
         db.add(deal)
         db.commit()
