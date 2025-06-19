@@ -46,7 +46,9 @@ def extract_fields(text: str) -> dict:
         "margin": 38.0,
         "capital_sought": "$150M" if "Dynamo" in text else "TBD",
         "objective": "Growth capital / refinance / Series E",
-        "summary": text[:800],
+        # Keep the teaser overview short so the frontend display isn't too heavy
+        # A couple of sentences are usually enough for context
+        "summary": text[:400],
         "highlights": [
             "Recurring revenue",
             "Customer retention",
@@ -133,12 +135,17 @@ async def generate_memo(deal_id: int, user_id: int | None = None):
 
     prompt = PromptTemplate(
         input_variables=["summary", "investor"],
-        template="\n".join([
-            "Write a concise one-page investment memo for the following deal:",
-            "{summary}",
-            "Tailor the memo for the investor described below:",
-            "{investor}",
-        ]),
+        template="\n".join(
+            [
+                "Write a short investment memo with the following sections:",
+                "Overview (two sentences maximum),",
+                "Investor Profile,",
+                "Thesis,",
+                "Investment Recommendation.",
+                "Deal summary: {summary}",
+                "Investor info: {investor}",
+            ]
+        ),
     )
     chain = prompt | llm
     response = chain.invoke({"summary": deal.summary, "investor": investor_profile})
