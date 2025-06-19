@@ -25,7 +25,7 @@ export default function DealIntelligenceApp() {
         throw new Error(text || 'Upload failed');
       }
       const data = await res.json();
-      setDeals(data.deals);
+      setDeals(prev => [...prev, ...data.deals]);
       setStatus('Upload successful');
     } catch (err) {
       console.error(err);
