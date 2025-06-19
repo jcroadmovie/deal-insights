@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from langchain.chat_models import ChatOpenAI
@@ -7,6 +8,8 @@ import pdfplumber
 import json
 
 from ..db import Deal, Memo, SessionLocal
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -18,7 +21,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-llm = ChatOpenAI(model='gpt-4')
+openai_api_key = os.getenv("OPENAI_API_KEY")
+llm = ChatOpenAI(model='gpt-4', openai_api_key=openai_api_key)
 
 
 def extract_text(upload: UploadFile) -> str:

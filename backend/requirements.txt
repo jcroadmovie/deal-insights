@@ -4,3 +4,4 @@ sqlalchemy
 pdfplumber
 langchain
 openai
+python-dotenv
