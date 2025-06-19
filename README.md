@@ -17,9 +17,9 @@ A full-stack AI-powered deal intelligence platform for private credit investors 
 ## Setup
 
 1. Create a `.env` with your OpenAI key and database URL
-2. Run the backend:
+2. From the project root, run the backend (the `backend` directory is a Python package):
 ```bash
-uvicorn app.main:app --reload
+uvicorn backend.app.main:app --reload
 ```
 3. Install frontend dependencies and run the dev server:
 ```bash
