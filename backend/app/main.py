@@ -2,8 +2,9 @@ from fastapi import FastAPI, UploadFile, File
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 import pdfplumber
+import json
 
-from ..db import Deal, SessionLocal
+from ..db import Deal, Memo, SessionLocal
 
 app = FastAPI()
 llm = ChatOpenAI(model='gpt-4')
@@ -38,20 +39,28 @@ def extract_fields(text: str) -> dict:
     }
 
 
-def generate_insight(text: str) -> str:
-    """Use LLM to produce a short investment memo paragraph."""
+def generate_insight(text: str) -> dict:
+    """Use LLM to produce memo, comparables, and risks."""
     prompt = PromptTemplate(
         input_variables=["teaser_text"],
-        template=(
-            "\n".join([
-                "You are a private credit investment analyst. Given the teaser below, write a one-paragraph personalized memo:",
-                "",  # blank line
+        template="\n".join(
+            [
+                "You are an analyst generating investment intelligence from the teaser below.",
+                "Return a JSON object with keys 'memo', 'comparables', and 'risk_indicators'.",
                 "{teaser_text}",
-            ])
+            ]
         ),
     )
     chain = prompt | llm
-    return chain.invoke({"teaser_text": text})
+    response = chain.invoke({"teaser_text": text})
+    try:
+        return json.loads(response)
+    except Exception:
+        return {
+            "memo": response,
+            "comparables": [],
+            "risk_indicators": [],
+        }
 
 
 @app.post("/api/upload")
@@ -61,9 +70,20 @@ async def upload(files: list[UploadFile] = File(...)):
     for file in files:
         raw_text = extract_text(file)
         fields = extract_fields(raw_text)
-        fields["ai_insights"] = generate_insight(raw_text)
+        insights = generate_insight(raw_text)
+        fields["ai_insights"] = insights.get("memo")
+        fields["comparables"] = insights.get("comparables")
+        fields["risk_indicators"] = insights.get("risk_indicators")
+
         deal = Deal(**fields)
         db.add(deal)
         db.commit()
+        db.refresh(deal)
+
+        memo = Memo(deal_id=deal.id, content=insights.get("memo"))
+        db.add(memo)
+        db.commit()
+
         output.append(fields)
+
     return {"deals": output}

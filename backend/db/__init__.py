@@ -2,7 +2,7 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from .schema import Base, Deal
+from .schema import Base, Deal, User, Memo
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./deals.db")
 
@@ -12,4 +12,4 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Create tables on import for demo purposes
 Base.metadata.create_all(engine)
 
-__all__ = ["Deal", "SessionLocal"]
+__all__ = ["Deal", "User", "Memo", "SessionLocal"]
