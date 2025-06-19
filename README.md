@@ -38,6 +38,9 @@ pip install -r backend/requirements.txt
 ```bash
 uvicorn backend.app.main:app --reload
 ```
+
+Running the backend will create a local SQLite database (`deals.db`). This file is generated automatically and should **not** be committed to version control.
+
 4. Install frontend dependencies and run the dev server:
 ```bash
 cd frontend
