@@ -22,7 +22,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 openai_api_key = os.getenv("OPENAI_API_KEY")
-llm = ChatOpenAI(model='gpt-4', openai_api_key=openai_api_key)
+openai_model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+llm = ChatOpenAI(model=openai_model, openai_api_key=openai_api_key)
 
 
 def extract_text(upload: UploadFile) -> str:

@@ -27,7 +27,9 @@ A full-stack AI-powered deal intelligence platform for private credit investors 
 ## Setup
 
 1. Create a `.env` file with your `OPENAI_API_KEY` and optional `DATABASE_URL`.
-   The backend automatically loads this file using `python-dotenv`.
+   You can also set `OPENAI_MODEL` to specify which OpenAI chat model to use
+   (defaults to `gpt-3.5-turbo`). The backend automatically loads this file
+   using `python-dotenv`.
 2. Install Python dependencies:
 ```bash
 pip install -r backend/requirements.txt
