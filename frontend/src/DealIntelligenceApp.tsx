@@ -152,7 +152,10 @@ export default function DealIntelligenceApp() {
                           <li key={i}>{h}</li>
                         ))}
                       </ul>
-                      <p><strong>AI Insights:</strong> {memo}</p>
+                      <p><strong>AI Insights:</strong></p>
+                      {memo.split('\n').map((line, i) => (
+                        line.trim() && <p key={i}>{line}</p>
+                      ))}
                       <Button
                         variant="outline"
                         onClick={() => alert('Deep research view coming soon...')}
