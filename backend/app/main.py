@@ -69,11 +69,12 @@ def generate_insight(text: str) -> dict:
     )
     chain = prompt | llm
     response = chain.invoke({"teaser_text": text})
+    content = getattr(response, "content", response)
     try:
-        return json.loads(response)
+        return json.loads(content)
     except Exception:
         return {
-            "memo": response,
+            "memo": content,
             "comparables": [],
             "risk_indicators": [],
         }
@@ -87,9 +88,10 @@ async def upload(files: list[UploadFile] = File(...)):
         raw_text = extract_text(file)
         fields = extract_fields(raw_text)
         insights = generate_insight(raw_text)
+        fields["highlights"] = json.dumps(fields.get("highlights", []))
         fields["ai_insights"] = insights.get("memo")
-        fields["comparables"] = insights.get("comparables")
-        fields["risk_indicators"] = insights.get("risk_indicators")
+        fields["comparables"] = json.dumps(insights.get("comparables", []))
+        fields["risk_indicators"] = json.dumps(insights.get("risk_indicators", []))
 
         deal = Deal(**fields)
         db.add(deal)
