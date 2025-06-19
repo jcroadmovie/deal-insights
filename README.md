@@ -41,6 +41,25 @@ uvicorn backend.app.main:app --reload
 
 Running the backend will create a local SQLite database (`deals.db`). This file is generated automatically and should **not** be committed to version control.
 
+### Updating the Database Schema
+
+If you modify the SQLAlchemy models after `deals.db` has already been created, the
+existing database will not get the new columns. An error such as
+
+```
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) table deals has no column named comparables
+```
+
+means the database was created before the `comparables` field was added. To reset
+the development database, delete `deals.db` and restart the backend:
+
+```bash
+rm deals.db
+```
+
+The backend will recreate the file with the current schema on startup. For more
+controlled upgrades, consider integrating a migration tool like Alembic.
+
 4. Install frontend dependencies and run the dev server:
 ```bash
 cd frontend
