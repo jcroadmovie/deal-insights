@@ -26,7 +26,8 @@ A full-stack AI-powered deal intelligence platform for private credit investors 
 
 ## Setup
 
-1. Create a `.env` with your OpenAI key and database URL
+1. Create a `.env` file with your `OPENAI_API_KEY` and optional `DATABASE_URL`.
+   The backend automatically loads this file using `python-dotenv`.
 2. Install Python dependencies:
 ```bash
 pip install -r backend/requirements.txt
