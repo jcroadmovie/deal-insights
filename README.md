@@ -21,8 +21,10 @@ A full-stack AI-powered deal intelligence platform for private credit investors 
 ```bash
 uvicorn app.main:app --reload
 ```
-3. Run the frontend:
+3. Install frontend dependencies and run the dev server:
 ```bash
+cd frontend
+npm install
 npm run dev
 ```
 
